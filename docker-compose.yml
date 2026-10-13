@@ -1,0 +1,131 @@
+services:
+  redis-node-1:
+    image: redis:8.8
+    hostname: redis-node-1
+    restart: always
+    networks:
+      - docker-kit-network
+    ports:
+      - '7001:6379'
+      - '17001:16379'
+    volumes:
+      - node_1_data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--cluster-announce-hostname", "redis-node-1"]
+
+  redis-node-2:
+    image: redis:8.8
+    hostname: redis-node-2
+    restart: always
+    networks:
+      - docker-kit-network
+    ports:
+      - '7002:6379'
+      - '17002:16379'
+    volumes:
+      - node_2_data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--cluster-announce-hostname", "redis-node-2"]
+
+  redis-node-3:
+    image: redis:8.8
+    hostname: redis-node-3
+    restart: always
+    networks:
+      - docker-kit-network
+    ports:
+      - '7003:6379'
+      - '17003:16379'
+    volumes:
+      - node_3_data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--cluster-announce-hostname", "redis-node-3"]
+
+  redis-node-4:
+    image: redis:8.8
+    hostname: redis-node-4
+    restart: always
+    networks:
+      - docker-kit-network
+    ports:
+      - '7004:6379'
+      - '17004:16379'
+    volumes:
+      - node_4_data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--cluster-announce-hostname", "redis-node-4"]
+
+  redis-node-5:
+    image: redis:8.8
+    hostname: redis-node-5
+    restart: always
+    networks:
+      - docker-kit-network
+    ports:
+      - '7005:6379'
+      - '17005:16379'
+    volumes:
+      - node_5_data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--cluster-announce-hostname", "redis-node-5"]
+
+  redis-node-6:
+    image: redis:8.8
+    hostname: redis-node-6
+    restart: always
+    networks:
+      - docker-kit-network
+    ports:
+      - '7006:6379'
+      - '17006:16379'
+    volumes:
+      - node_6_data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--cluster-announce-hostname", "redis-node-6"]
+
+  redis-cluster-init:
+    image: redis:8.8
+    restart: "no"
+    networks:
+      - docker-kit-network
+    depends_on:
+      redis-node-1:
+        condition: service_started
+      redis-node-2:
+        condition: service_started
+      redis-node-3:
+        condition: service_started
+      redis-node-4:
+        condition: service_started
+      redis-node-5:
+        condition: service_started
+      redis-node-6:
+        condition: service_started
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >-
+        until redis-cli -a 123456 -h redis-node-1 -p 6379 ping | grep -q PONG &&
+        redis-cli -a 123456 -h redis-node-2 -p 6379 ping | grep -q PONG &&
+        redis-cli -a 123456 -h redis-node-3 -p 6379 ping | grep -q PONG &&
+        redis-cli -a 123456 -h redis-node-4 -p 6379 ping | grep -q PONG &&
+        redis-cli -a 123456 -h redis-node-5 -p 6379 ping | grep -q PONG &&
+        redis-cli -a 123456 -h redis-node-6 -p 6379 ping | grep -q PONG; do
+          echo 'Waiting for Redis nodes...'; sleep 2;
+        done;
+        if redis-cli -a 123456 -h redis-node-1 -p 6379 cluster info | grep -q 'cluster_state:ok'; then
+          echo 'Redis Cluster is already initialized.';
+        else
+          redis-cli -a 123456 --cluster create redis-node-1:6379 redis-node-2:6379 redis-node-3:6379 redis-node-4:6379 redis-node-5:6379 redis-node-6:6379 --cluster-replicas 1 --cluster-yes;
+        fi
+
+volumes:
+  node_1_data:
+  node_2_data:
+  node_3_data:
+  node_4_data:
+  node_5_data:
+  node_6_data:
+
+networks:
+  docker-kit-network:
+    external: true
