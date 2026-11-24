@@ -1,6 +1,6 @@
 services:
   redis-node-1:
-    image: redis:8.8
+    image: registry.cn-hangzhou.aliyuncs.com/zaqbest/redis:8.8
     hostname: redis-node-1
     restart: always
     networks:
@@ -14,7 +14,7 @@ services:
     command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--cluster-announce-hostname", "redis-node-1"]
 
   redis-node-2:
-    image: redis:8.8
+    image: rregistry.cn-hangzhou.aliyuncs.com/zaqbest/redis:8.8
     hostname: redis-node-2
     restart: always
     networks:
@@ -28,7 +28,7 @@ services:
     command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--cluster-announce-hostname", "redis-node-2"]
 
   redis-node-3:
-    image: redis:8.8
+    image: registry.cn-hangzhou.aliyuncs.com/zaqbest/redis:8.8
     hostname: redis-node-3
     restart: always
     networks:
@@ -42,7 +42,7 @@ services:
     command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--cluster-announce-hostname", "redis-node-3"]
 
   redis-node-4:
-    image: redis:8.8
+    image: registry.cn-hangzhou.aliyuncs.com/zaqbest/redis:8.8
     hostname: redis-node-4
     restart: always
     networks:
@@ -56,7 +56,7 @@ services:
     command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--cluster-announce-hostname", "redis-node-4"]
 
   redis-node-5:
-    image: redis:8.8
+    image: registry.cn-hangzhou.aliyuncs.com/zaqbest/redis:8.8
     hostname: redis-node-5
     restart: always
     networks:
@@ -70,7 +70,7 @@ services:
     command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--cluster-announce-hostname", "redis-node-5"]
 
   redis-node-6:
-    image: redis:8.8
+    image: registry.cn-hangzhou.aliyuncs.com/zaqbest/redis:8.8
     hostname: redis-node-6
     restart: always
     networks:
@@ -84,7 +84,7 @@ services:
     command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--cluster-announce-hostname", "redis-node-6"]
 
   redis-cluster-init:
-    image: redis:8.8
+    image: registry.cn-hangzhou.aliyuncs.com/zaqbest/redis:8.8
     restart: "no"
     networks:
       - docker-kit-network
